@@ -1,0 +1,57 @@
+# 假設字串中最多只會出現一次 not ... at all
+
+# 法一：find + replace
+s = input() # This company is not poor at all. 
+
+start_s = s.find("not")
+# print(start_s) # 16
+end_s = s.find("at all")
+# print(end_s) # 25
+new_s = s.replace(s[start_s:end_s+6], "good")
+print(new_s) # This company is good. 
+
+# ================================================
+
+# 法二：find
+s = input() # This company is not poor at all. 
+
+start_s = s.find("not")
+# print(start_s) # 16
+end_s = s.find("at all")
+# print(end_s) # 25
+new_s = s[:start_s] + "good" + s[end_s+6:]
+print(new_s) # This company is good. 
+
+# ================================================
+
+# 法三：split
+s = input() # This company is not poor at all. 
+
+start_s = s.split("not")
+# print(start_s) # ['This company is ', ' poor at all.']
+end_s = s.split("at all")
+# print(end_s) # ['This company is not poor ', '.']
+new_s = start_s[0] + "good" + end_s[1]
+print(new_s)
+
+# ================================================
+
+# 法四：format
+s = input() # This company is not poor at all.
+
+start_s=s.find("not")
+end_s=s.find("at all")
+new_s="{}{}{}".format(s[:start_s],"good",s[end_s+6:])
+print(new_s) # This company is good.
+
+# ================================================
+
+# 法五：re.sub
+import re
+
+s = input()  
+
+# 使用 re.sub 函式來進行正規表達式取代
+d = re.sub(r"not\s+.*?\s+at\s+all", "good", s)  
+
+print(d)  
