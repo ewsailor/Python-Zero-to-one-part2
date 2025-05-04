@@ -1,0 +1,102 @@
+# 法一：in
+nums = [3,2,4]
+target = 6
+
+for i in range(len(nums)):
+    if target - nums[i] == nums[i]: # 如果 target - nums[i] 等於 nums[i]，則跳過，因為不能用同樣的元素 2 次，即使用 2 次 3
+        continue
+    if target - nums[i] in nums:
+        print([i, nums.index(target - nums[i])])
+        break # 如果不加上 break，會印出所有符合條件的索引，即 [0,1] 和 [1,0]
+
+# ================================================
+
+# 法二：Hash Map、enumerate
+# 時間複雜度：O(n)
+nums = [3,2,4]
+target = 6
+
+num_to_index = {}  # 建立數值到索引的映射
+for i, num in enumerate(nums):
+    complement = target - num
+    if complement in num_to_index:
+        print([num_to_index[complement], i])
+    num_to_index[num] = i
+
+# 法二，寫成函式的形式
+nums = [3,2,4]
+target = 6
+
+def two_sum(nums, target):
+    num_to_index = {}  # 創建一個字典用於存儲已經遍歷過的數字和它們的 index
+    for i, num in enumerate(nums):
+        complement = target - num # 計算與目標值的差值
+        if complement in num_to_index:
+            return [num_to_index[complement], i] # 如果差值已經存在於 num_to_index 中，返回差值的 index 和當前的 index
+        num_to_index[num] = i
+    return [] # 如果找不到符合條件的組合，返回空列表
+print(two_sum([3,2,4], 6))   # 輸出 [1, 2]
+d = two_sum(nums, target)
+print(d) # [0,1] 
+
+
+# 法二，寫成推導式，從 i+1 開始算到 len(nums)
+nums = [3,2,4]
+target = 6
+
+l = [[i,j] for i in range(len(nums)) for j in range(i+1, len(nums)) if nums[i]+nums[j] == target]
+print(l[0])
+print(l[0])
+
+# 法二，寫成推導式
+nums = [3,2,4]
+target = 6
+
+l = [[i,j] for i in range(len(nums)) for j in range(len(nums)) if nums[i]+nums[j] == target and i != j]
+print(l[0])
+
+# ================================================
+
+# 法三：避免重複檢查
+# 時間複雜度：O(n²) 
+nums = [3,2,4]
+target = 6
+
+for i in range(len(nums)): 
+    for j in range(i+1, len(nums)):  # j 從 i+1 開始，避免重複檢查
+        if nums[i] + nums[j] == target: 
+            print([i, j])
+            break
+# ================================================
+
+# 法四：函式           
+nums = [3,2,4]
+target = 6
+
+def find_pair():
+    for i in range(len(nums)): 
+        for j in range(len(nums)):
+            if target - nums[i] == nums[i]:
+                continue
+            if nums[i] + nums[j] == target: 
+                return [i, j]  # 找到答案就直接返回
+
+print(find_pair())
+
+# ================================================
+
+# 法五：標誌變數
+nums = [3,2,4]
+target = 6
+found = False  # 新增標誌變數
+
+for i in range(len(nums)): 
+    if found:  # 如果已經找到答案，跳出外層迴圈
+        break
+    for j in range(len(nums)):
+        if target - nums[i] == nums[i]:
+            continue
+        if nums[i] + nums[j] == target: 
+            print([i, j])
+            found = True  # 設置標誌
+            break
