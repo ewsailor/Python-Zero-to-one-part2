@@ -1,0 +1,120 @@
+# 法一：
+import math
+n = int(input("請輸入正整數："))
+
+d = [[x, y] for x in range(n+1) for y in range(n+1) if x + 2*y == n]
+
+total = sum([math.factorial(x + y) / (math.factorial(x) * math.factorial(y)) for x, y in d])
+
+print("加總結果：", total)
+
+# 展開
+d = [[x, y] for x in range(n+1) for y in range(n+1) if x + 2*y == n]
+
+for x in range(n+1):
+    for y in range(n+1):
+        if x + 2*y == n:
+            d.append(list([x, y]))
+
+# ================================================
+
+# 法二：
+import math
+n = int(input("請輸入正整數：")); 
+
+d = [[x, y] for x in range(n+1) for y in range(n+1) if x + 2*y == n]
+
+total = 0
+for i in range(len(d)):
+    value = math.factorial(d[i][0] + d[i][1]) / (math.factorial(d[i][0]) * math.factorial(d[i][1]))
+    print(value)
+    total += value
+
+print("加總結果：", total)
+
+# ================================================
+
+# 法三：費式數列，「爬第 n 階樓梯的方法數」等於「爬上 n−1 階樓梯的方法數量」 + 「爬上 n−2 階樓梯的方法數量」
+n = int(input("請輸入正整數："))
+
+steps = [0] * (int(n) + 1) # 建立一個長度為 n+1 的 list steps，用來記錄走到每一階的方法數
+
+steps[0] = 1 # 走到第 0 階（起點）只有 1 種方法，就是什麼都不做。
+
+for i in range(1, int(n) + 1):
+    if i - 1 >= 0:
+       steps[i] += steps[i - 1]
+    if i - 2 >= 0:
+       steps[i] += steps[i - 2]
+d = steps[int(n)]
+print(d) # 2 
+
+# 相似的寫法：每次計算 f(n) 之後，會去遞迴計算 f(n-1) + f(n-2)。相同的概念在計算 f(n-1) 會去計算 f(n-2) + f(n-3)、f(n-2) 會去計算 f(n-3) + f(n-4)，以這個例子來看，f(n-3) 會同時在 f(n-1) 和 f(n-2) 重複計算。這樣一來，當 n 很大的時候就會有更多的值會再遞迴過程中重複計算。
+n = int(input("請輸入階梯數："))
+
+def climbStairs(n: int) -> int:
+  W = [0, 1, 2]
+  if len(W) < n+1:
+      return climbStairs(n - 2) + climbStairs(n - 1);
+  return W[n];
+
+print(climbStairs(n))
+
+# 相似的寫法：將剛剛的 f(n-3) 給記錄下來，而不用每一個遞迴過程都重複計算。所以我們想到的是將結果存在一個變數當中（而非每次都計算），將遞迴的過程暫存到一個變數中，如下：
+n = int(input("請輸入階梯數："))
+
+W = [0, 1, 2]
+for i in range(3, n+1):
+  W.append(W[i - 2] + W[i - 1])
+
+print(W[n]) 
+
+# 相似的寫法 
+User_input = int(input("How many stairs you want to go : ")) 
+memo = {0:0,1:1,2:2}
+
+def climbStairs(n):
+    if n in memo:
+        return memo[n]
+    memo[n] = climbStairs(n-1) + climbStairs(n-2)
+    return memo[n]
+
+print(climbStairs(User_input))
+
+# 相似的寫法
+User_input = int(input("How many stairs you want to go : ")) 
+
+def climb_stairs_dp(n):
+    if n==0 or n==1:
+        return 1
+    
+    dp =[0]*(n+1)# create a list, space is n+1, initial value is 0
+    dp[0]=1 # go to stair 0 only one way, which is doing nothing
+    dp[1]=1  #go to stair 1 only one way, which is take 1 step
+    
+    #count the next stairs dp[2], dp[3]...
+    for i in range(2,(n+1)):
+        dp[i]=dp[i-1]+dp[i-2] #combine last step and last two steps ways
+    
+    return dp[n]    
+    
+ways = climb_stairs_dp(User_input)
+print("Total number of ways to climb:", ways)
+
+# ================================================
+
+# 法四：
+Answer_output=0
+def myfunction(layer, max_deep):
+    global Answer_output  
+    if layer ==(max_deep): #good job
+        Answer_output=Answer_output+1
+        return
+    if layer > (max_deep): #this step is too big
+        return
+    myfunction(layer+2, max_deep)
+    myfunction(layer+1, max_deep)
+
+User_input = int(input("How many stairs you want to go : "))
+myfunction(0,User_input)
+print(Answer_output)
