@@ -1,0 +1,124 @@
+# 法一：
+s = input("請輸入字串：") # abc
+
+from itertools import permutations
+d = [''.join(i) for i in permutations(s)]
+
+print(d) # ['abc', 'acb', 'bac', 'bca', 'cab', 'cba']
+
+# 相似的寫法：
+s = input("請輸入字串：") # abc
+d = list(set([s[i] for i in range(len(s))])) # 用 Set 去掉重複的字母，並轉換成 list，不過是無序的
+
+import itertools # 匯入 Python 標準函式庫中的 itertools 模組，這個模組提供了很多處理迴圈和排列組合的工具。
+
+def F(chars): # 定義一個函式 F，參數是 chars（一個字元 list）。
+    perms = list(itertools.permutations(chars)) 
+    # 用 itertools.permutations 函式，產生 chars 所有可能的排列（permutations），每一個排列都是一個 tuple，最後將結果轉換成 list。
+    # 例如 chars = ['A', 'B', 'C']，排列會有 ('A', 'B', 'C'), ('A', 'C', 'B'), ('B', 'A', 'C') 等等。
+    for p in perms:
+        print(''.join(p), end=' ') # acb abc cab cba bac bca
+    return perms
+
+e = F(d)
+
+print(e) # [('a', 'c', 'b'), ('a', 'b', 'c'), ('c', 'a', 'b'), ('c', 'b', 'a'), ('b', 'a', 'c'), ('b', 'c', 'a')]
+
+# ================================================
+
+# 法二：產生所有可能的排列（permutations），包含重複字元的情況。例如輸入 "AAB"，會產生 "AAB", "ABA", "BAA" 等。
+# 如果輸入的字串有重複字元，排列結果中也會有重複的排列（因為每個字元位置都被視為不同）。
+s = input("請輸入字串：") # abc
+d = []
+
+def permute(s, i, length): # i：目前要交換的起始位置，length：字串的長度
+    if i == length: # 如果 i 等於 length，表示已經交換完所有元素，將交換後的字串加入 d 列表中
+        d.append("".join(s))
+    else: # 如果 i 不等於 length，表示還有元素需要交換
+        for j in range(i, length): # j：目前要交換的元素位置
+            s[i], s[j] = s[j], s[i] # 交換元素
+            permute(s, i+1, length) # 遞迴調用 permute 函式，將 i 加 1，繼續交換下一個元素
+            s[j], s[i] = s[i], s[j]
+
+permute(list(s), 0, len(s))
+print(d) # ['abc', 'acb', 'bac', 'bca', 'cba', 'cab']
+
+# ================================================
+
+# 法三：
+s = input("請輸入字串：") # abc
+d = list(set([s[i] for i in range(len(s))])) # 用 Set 去掉重複的字母，並轉換成 list，不過是無序的
+
+def permutations(lst):
+    if len(lst) == 0:
+        return [[]]
+    result = []
+    for i in range(len(lst)):
+        rest = lst[:i] + lst[i+1:]
+        print(f"for i in range(len(lst)): lst={lst}, i={i}, lst[i]={lst[i]}, rest={rest}")  # 印出目前選誰、剩下誰
+        for p in permutations(rest):
+            result.append([lst[i]] + p)
+            print(f"  - for p in permutations(rest): 此時 rest={rest}，i={i}，p={p}，lst[i]={lst[i]}，result={result}")
+    return result
+
+for p in permutations(s): # 例如輸入 ['A', 'B', 'C']
+    print("最終排列:", p) 
+ 
+# 印出
+for i in range(len(lst)): lst=['A', 'B', 'C'], i=0, lst[i]=A, rest=['B', 'C']
+for i in range(len(lst)): lst=['B', 'C'], i=0, lst[i]=B, rest=['C']
+for i in range(len(lst)): lst=['C'], i=0, lst[i]=C, rest=[]
+  - for p in permutations(rest): rest=[]，i=0，lst[i]=C，p=[]，combined=['C']
+  - for p in permutations(rest): result=[['C']]
+  - for p in permutations(rest): rest=['C']，i=0，lst[i]=B，p=['C']，combined=['B', 'C']
+  - for p in permutations(rest): result=[['B', 'C']]
+for i in range(len(lst)): lst=['B', 'C'], i=1, lst[i]=C, rest=['B']
+for i in range(len(lst)): lst=['B'], i=0, lst[i]=B, rest=[]
+  - for p in permutations(rest): rest=[]，i=0，lst[i]=B，p=[]，combined=['B']
+  - for p in permutations(rest): result=[['B']]
+  - for p in permutations(rest): rest=['B']，i=1，lst[i]=C，p=['B']，combined=['C', 'B']
+  - for p in permutations(rest): result=[['B', 'C'], ['C', 'B']]
+  - for p in permutations(rest): rest=['B', 'C']，i=0，lst[i]=A，p=['B', 'C']，combined=['A', 'B', 'C']
+  - for p in permutations(rest): result=[['A', 'B', 'C']]
+  - for p in permutations(rest): rest=['B', 'C']，i=0，lst[i]=A，p=['C', 'B']，combined=['A', 'C', 'B']
+  - for p in permutations(rest): result=[['A', 'B', 'C'], ['A', 'C', 'B']]
+for i in range(len(lst)): lst=['A', 'B', 'C'], i=1, lst[i]=B, rest=['A', 'C']
+for i in range(len(lst)): lst=['A', 'C'], i=0, lst[i]=A, rest=['C']
+for i in range(len(lst)): lst=['C'], i=0, lst[i]=C, rest=[]
+  - for p in permutations(rest): rest=[]，i=0，lst[i]=C，p=[]，combined=['C']
+  - for p in permutations(rest): result=[['C']]
+  - for p in permutations(rest): rest=['C']，i=0，lst[i]=A，p=['C']，combined=['A', 'C']
+  - for p in permutations(rest): result=[['A', 'C']]
+for i in range(len(lst)): lst=['A', 'C'], i=1, lst[i]=C, rest=['A']
+for i in range(len(lst)): lst=['A'], i=0, lst[i]=A, rest=[]
+  - for p in permutations(rest): rest=[]，i=0，lst[i]=A，p=[]，combined=['A']
+  - for p in permutations(rest): result=[['A']]
+  - for p in permutations(rest): rest=['A']，i=1，lst[i]=C，p=['A']，combined=['C', 'A']
+  - for p in permutations(rest): result=[['A', 'C'], ['C', 'A']]
+  - for p in permutations(rest): rest=['A', 'C']，i=1，lst[i]=B，p=['A', 'C']，combined=['B', 'A', 'C']
+  - for p in permutations(rest): result=[['A', 'B', 'C'], ['A', 'C', 'B'], ['B', 'A', 'C']]
+  - for p in permutations(rest): rest=['A', 'C']，i=1，lst[i]=B，p=['C', 'A']，combined=['B', 'C', 'A']
+  - for p in permutations(rest): result=[['A', 'B', 'C'], ['A', 'C', 'B'], ['B', 'A', 'C'], ['B', 'C', 'A']]
+for i in range(len(lst)): lst=['A', 'B', 'C'], i=2, lst[i]=C, rest=['A', 'B']
+for i in range(len(lst)): lst=['A', 'B'], i=0, lst[i]=A, rest=['B']
+for i in range(len(lst)): lst=['B'], i=0, lst[i]=B, rest=[]
+  - for p in permutations(rest): rest=[]，i=0，lst[i]=B，p=[]，combined=['B']
+  - for p in permutations(rest): result=[['B']]
+  - for p in permutations(rest): rest=['B']，i=0，lst[i]=A，p=['B']，combined=['A', 'B']
+  - for p in permutations(rest): result=[['A', 'B']]
+for i in range(len(lst)): lst=['A', 'B'], i=1, lst[i]=B, rest=['A']
+for i in range(len(lst)): lst=['A'], i=0, lst[i]=A, rest=[]
+  - for p in permutations(rest): rest=[]，i=0，lst[i]=A，p=[]，combined=['A']
+  - for p in permutations(rest): result=[['A']]
+  - for p in permutations(rest): rest=['A']，i=1，lst[i]=B，p=['A']，combined=['B', 'A']
+  - for p in permutations(rest): result=[['A', 'B'], ['B', 'A']]
+  - for p in permutations(rest): rest=['A', 'B']，i=2，lst[i]=C，p=['A', 'B']，combined=['C', 'A', 'B']
+  - for p in permutations(rest): result=[['A', 'B', 'C'], ['A', 'C', 'B'], ['B', 'A', 'C'], ['B', 'C', 'A'], ['C', 'A', 'B']]
+  - for p in permutations(rest): rest=['A', 'B']，i=2，lst[i]=C，p=['B', 'A']，combined=['C', 'B', 'A']
+  - for p in permutations(rest): result=[['A', 'B', 'C'], ['A', 'C', 'B'], ['B', 'A', 'C'], ['B', 'C', 'A'], ['C', 'A', 'B'], ['C', 'B', 'A']]
+最終排列: ['A', 'B', 'C']
+最終排列: ['A', 'C', 'B']
+最終排列: ['B', 'A', 'C']
+最終排列: ['B', 'C', 'A']
+最終排列: ['C', 'A', 'B']
+最終排列: ['C', 'B', 'A']
