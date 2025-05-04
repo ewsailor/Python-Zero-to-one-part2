@@ -1,0 +1,59 @@
+# 法一：
+def add1(n):
+  return n + 1
+
+def isPrime(n):
+    if n <= 1:
+        return False
+    for i in range(2, int(n**0.5) + 1):
+        if n % i == 0:
+            return False
+    return True
+
+def f(L, F): 
+  return [F(i) for i in L]
+
+L = [1,2,3,4,5,6]
+F = add1
+print(f(L, F)) # [2,3,4,5,6,7]
+
+L = [2,3,4,5,6,7]
+F = isPrime 
+print(f(L, F)) # [True,True,False,True,False,True]
+    
+# ================================================
+
+# 迴圈展開
+def f(L, F): 
+  return [F(i) for i in L]
+  
+def f(L, F): 
+  result = []
+  for i in L:
+      result.append(F(i))
+  return result
+
+# ================================================
+
+# 法二：
+def add1(n):
+  return n + 1
+
+def isPrime(n):
+    if n <= 1: # 負數、0、1 都不是質數，先排除。
+        return False
+    # 若一個數字有因數，必定在 2 到 √n 之間就會找到（這是質數檢查的常見優化）。
+		# all() 是 Python 的內建函式，若所有元素都為 True，才會回傳 True。
+		return all(n % d != 0 for d in range(2, int(n**0.5)+1))
+
+def f(L, F): 
+  return [F(i) for i in L]
+
+L = [1,2,3,4,5,6]
+F = add1
+print(f(L, F)) # [2,3,4,5,6,7]
+
+L = [2,3,4,5,6,7]
+F = isPrime 
+print(f(L, F)) # [True,True,False,True,False,True]
+ 
